@@ -1,0 +1,203 @@
+% The MIT License (MIT)
+%
+% Copyright (c) 2020 Yegor Bugayenko
+%
+% Permission is hereby granted, free of charge, to any person obtaining a copy
+% of this software and associated documentation files (the "Software"), to deal
+% in the Software without restriction, including without limitation the rights
+% to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+% copies of the Software, and to permit persons to whom the Software is
+% furnished to do so, subject to the following conditions:
+%
+% The above copyright notice and this permission notice shall be included
+% in all copies or substantial portions of the Software.
+%
+% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+% IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+% FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE
+% AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+% LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+% OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+% SOFTWARE.
+
+% \documentclass[a4paper,UKenglish,cleveref, autoref]{lipics-v2019}
+\documentclass[12pt]{article}
+\title{Source Code Volatility Metric}
+\author{Yegor Bugayenko}{}{}
+% \authorrunning{Yegor Bugayenko}
+% \ccsdesc[100]{Software and its engineering~Object oriented languages}
+% \keywords{Object-Oriented Programming, Immutability, NCSS}
+\usepackage[utf8]{inputenc}
+\usepackage[numbers]{natbib}
+\bibliographystyle{plainnat}
+\usepackage{textcomp}
+\usepackage[inline]{enumitem}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\usepackage{verbatimbox}
+\usepackage{interval}
+\usepackage{hyperref}
+\usepackage{minted}
+  \setminted{fontsize=\footnotesize}
+  \setminted{breaklines}
+  \usemintedstyle{bw}
+\newcommand{\code}[1]{\texttt{#1}}
+\newenvironment{nicetable}
+  {\setlength{\parindent}{0em}\medskip\small}
+  {\medskip}
+\input{total}
+\begin{document}
+\raggedbottom
+\maketitle
+
+\begin{abstract}
+A new metric was introduced to calculate the distance
+between actively modified files in a source code repository
+and the files, which are rarely modified and may be considered
+as ``dead'' or ``abandoned.'' It was empirically demonstrated that larger repositories
+have larger values of the introduced metric.
+\end{abstract}
+
+\section{Introduction}
+
+Most software development projects keep their source code in Git,
+which is the de-facto standard in the industry at the moment, or similar
+version control systems. Every system, including open
+source products like Git, Subversion, and Mercurial, and commerical tools
+like Borland StarTeam\texttrademark{} or IBM ClearCase\texttrademark{}
+have the same feature: keeping track of the changes
+made to the source code files, known as ``logs.''
+
+Git logs provide information about every single change made by every software
+developer during the entire course of the project. Using this information
+it's possible to measure which files are being modified frequently. On the
+other hand, it's also possible to spot files that are rarely modified and may
+be considered as ``dead'' or ``abandoned'' code, which is a threat
+to the maintainability of the entire project.
+
+It is possible to introduce a metric to measure the relationship
+between the amount of actively modified files and files which stay
+in the repository for a long time without modifications.
+In Section~\ref{sec:method} such a metric is introduced.
+
+In order to demonstrate how the metric works we applied it to
+\thetotalrepos{} public Java repositories from GitHub and analyzed
+its impact on a few other simple metrics, including the number
+of files in a repository, the number of directories, and the amount
+of bytes.
+
+\section{Related Work}
+
+...
+
+\section{Method}
+\label{sec:method}
+
+First, by looking at the Git history,
+it is observed how many times every source code file out of $N$ was touched
+during the lifetime of the repository (excluding the files that don't exist
+in the repository anymore):
+
+\begin{eqnarray}
+T = [t_1, t_2, \dots, t_N]
+\end{eqnarray}
+
+Then, the entire interval between $\check{T}$ (the maximum value)
+and $\hat{T}$ (the minimum value) is divided to $Z$ equivalent groups:
+
+\begin{align}
+G &= [g_1, g_2, \dots, g_{Z}] \\
+\delta &= ( \check{T} - \hat{T} ) / Z \\
+g_j &= \sum_{i=1}^N [ j(\delta-1) < t_i < j\delta ]
+\end{align}
+
+Then, the mean $\mu$ is calculated as:
+
+\begin{eqnarray}
+\mu = \frac{1}{Z}\sum_{j=1}^{Z}{g_j}
+\end{eqnarray}
+
+Finally, the variance is calculated as:
+
+\begin{eqnarray}
+\text{Var}(g) = \frac{1}{Z}\sum_{j=1}^{Z}{|g_j - \mu|^2}
+\end{eqnarray}
+
+The variance $\text{Var}(g)$ is the volatility of the source code. The smaller
+the volatility the more cohesive is the repository and the smaller
+the amount of the dead code inside it.
+
+\section{Empirical Results}
+
+A list of Java repositories were retrieved from GitHub via their
+public API. The first \thetotalrepos{} repositories were taken, which satisfied
+the selection criteria:
+\begin{enumerate*}[label={\arabic*)}]
+\item more than 1,000 GitHub stars,
+\item more than 200 Kb of data,
+\item not archived, and
+\item public.
+\end{enumerate*}
+The list included popular Java open source products, such as
+Spring, RxJava, Guava, MyBatis, Clojure, JUnit, Lombok,
+Graal, Selenium, Spark, Mockito, Neo4j, Jenkins, Netty, and others.
+
+The volatility metric was calculated for each repository, using the
+formula explained above (the value of $Z$ was set to 64).
+Then, a few other metrics were collected
+for each repository and their values were compared with the volatility.
+
+The Figure~\ref{fig:1} demonstrates the relationship between
+the number of files in the repository~($M_1$) and its volatility~($V$). Both
+axixes of the graph have logarithmic scales, for the sake of visual
+understandability: the difference between minimum and maximum values
+of volatility is logarithmically large. It is visually obvious that
+repositories with larger number of files tend to have higher values
+of the volatility metric.
+
+\begin{figure}[h]
+  \input{files.tex}
+  \caption{The relationship between the number of files in the repository and its volatility}
+  \label{fig:1}
+\end{figure}
+
+The Figure~\ref{fig:2} demonstrates the relationship between
+the logarithm of the size of the Git repository in bytes~($M_2$) and
+the logarithm of its volatility~($V$).
+It is visually obvious that
+binary-size larger repositories tend to have higher values
+of the volatility metric.
+
+\begin{figure}[h]
+  \input{bytes.tex}
+  \caption{The relationship between the size of the Git repository in bytes and its volatility}
+  \label{fig:2}
+\end{figure}
+
+The Figure~\ref{fig:3} demonstrates the relationship between
+the logarithm of the size of the Git repository in bytes~($M_3$) and
+the logarithm of its volatility~($V$).
+It is visually obvious that
+repositories with more directories tend to have higher values
+of the volatility metric.
+
+\begin{figure}[h]
+  \input{dirs.tex}
+  \caption{The relationship between the number of repositories in the repository and its volatility}
+  \label{fig:3}
+\end{figure}
+
+\section{Conclusion}
+
+A new source code volatility metric was introduced and applied
+to \thetotalrepos{} open source Java repositories from GitHub. It was
+empirically demonstrated that larger repositories have higher values
+of the volatility metric.
+
+The source code of Ruby and Python scripts used to do the research
+is available in GitHub repository \texttt{yegor256/volatility-vs-size}.
+
+\bibliography{main}
+
+\end{document}
