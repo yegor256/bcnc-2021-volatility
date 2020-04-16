@@ -61,7 +61,7 @@ have larger values of the introduced metric.
 
 \section{Introduction}
 
-Most software development projects keep their source code in Git,
+Most software development projects keep their source code in Git~\citet{loeliger2012},
 which is the de-facto standard in the industry at the moment, or similar
 version control systems. Every system, including open
 source products like Git, Subversion, and Mercurial, and commerical tools
@@ -85,7 +85,11 @@ In order to demonstrate how the metric works we applied it to
 \thetotalrepos{} public Java repositories from GitHub and analyzed
 its impact on a few other simple metrics, including the number
 of files in a repository, the number of directories, and the amount
-of bytes.
+of bytes. Since, according to~\citet{muthukumaran2015},
+``code change metrics mined from source control repositories have
+proven to be the most reliable predictors of bugs in
+contemporary software engineering research,'' the introduced volatility
+metric may be used to spot maintainability issues.
 
 \section{Related Work}
 
