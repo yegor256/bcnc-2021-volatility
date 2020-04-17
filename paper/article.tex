@@ -97,10 +97,17 @@ The metric introduced in this research belongs to the family of
 ``code change metrics,'' which analyze the history of changes in a repository~\citep{fentonsoftware,choudhary2018}.
 Code churn is one of the simplest metric, which counts
 all lines being modified (added, edited, and deleted) during
-the entire lifetime of a project~\citep{munson1998}.
+the entire lifetime of a project~\citep{munson1998}. It was demonstrated
+by~\citet{shin2010} how code churn, together with complexity and other
+developer activity metrics, is related to software vulnerabilities.
 The number of changes being made to a particular file, class, method
 or line of code is yet another simple metric, used for example by~\citet{demeyer2000}
 in order to analyze the effect of refactorings.
+
+\citet{moser2008} made a comparative analysis of 17 change metrics to understand
+their efficiency for defect prediction: number of distinct authors per file,
+total modifications per file, total additions per file, maximum number of
+files committed together, and others.
 
 \citet{biazzini2014} introduced a number of metrics to analyze
 Git history (specifically related to GitHub), such as unique-count, unique-ratio,
