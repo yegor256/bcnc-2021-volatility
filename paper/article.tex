@@ -112,8 +112,8 @@ Then, the entire interval between $\check{T}$ (the maximum value)
 and $\hat{T}$ (the minimum value) is divided to $Z$ equivalent groups:
 
 \begin{align}
-G &= [g_1, g_2, \dots, g_{Z}] \\
 \delta &= ( \check{T} - \hat{T} ) / Z \\
+G &= [g_1, g_2, \dots, g_{Z}] \\
 g_j &= \sum_{i=1}^N [ j(\delta-1) < t_i < j\delta ]
 \end{align}
 
@@ -180,18 +180,14 @@ of the volatility metric.
   \label{fig:2}
 \end{figure}
 
-The Figure~\ref{fig:3} demonstrates the relationship between
-the logarithm of the size of the Git repository in bytes~($M_3$) and
-the logarithm of its volatility~($V$).
-It is visually obvious that
-repositories with more directories tend to have higher values
-of the volatility metric.
+\section{Discussion}
 
-\begin{figure}[h]
-  \input{dirs.tex}
-  \caption{The relationship between the number of repositories in the repository and its volatility}
-  \label{fig:3}
-\end{figure}
+It was demonstrated that the size of the source code is an important
+factor negatively affecting maintainability and other quality characteristicts.
+For example, \citep{heitlager2007} suggested to consider ``volume'' (the amount of code
+in the repository) as a primary contributor to an aggregate maintainability index
+of a software because ``it is fairly intuitive that the total size of a system should
+feature heavily in any measure of maintainability.''
 
 \section{Conclusion}
 
