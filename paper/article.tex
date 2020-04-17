@@ -93,8 +93,23 @@ metric may be used to spot maintainability issues.
 
 \section{Related Work}
 
-There are a few existing code change metrics, including code churn~\citep{munson1998}
-and others~\citep{fentonsoftware}.
+The metric introduced in this research belongs to the family of
+``code change metrics,'' which analyze the history of changes in a repository~\citep{fentonsoftware}.
+Code churn is one of the simplest metric, which counts
+all lines being modified (added, edited, and deleted) during
+the entire lifetime of a project~\citep{munson1998}.
+The number of changes being made to a particular file, class, method
+or line of code is yet another simple metric, used for example by~\citet{demeyer2000}
+in order to analyze the effect of refactorings.
+
+\citep{biazzini2014} introduced a number of metrics to analyze
+Git history (specifically related to GitHub), such as unique-count, unique-ratio,
+VIP-count, VIP-ratio, scattered-count, pervasive-count and a few others. Some
+of the metrics are supposed to be calculated for a repository together with
+its forks, while others may be calculated for a single repository history.
+
+To our knowledge, the metric introduced in this research has never been
+suggested.
 
 \section{Method}
 \label{sec:method}
@@ -184,8 +199,9 @@ of the volatility metric.
 
 It was demonstrated that the size of the source code is an important
 factor negatively affecting maintainability and other quality characteristicts.
-For example, \citep{heitlager2007} suggested to consider ``volume'' (the amount of code
-in the repository) as a primary contributor to an aggregate maintainability index
+For example, \citet{heitlager2007} suggested to consider ``volume'' (the amount of code
+in the repository, the number of lines per file, the number of methods in a class,
+and so on) as a primary contributor to an aggregate maintainability index
 of a software because ``it is fairly intuitive that the total size of a system should
 feature heavily in any measure of maintainability.''
 
