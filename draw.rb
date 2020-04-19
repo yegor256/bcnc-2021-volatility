@@ -24,8 +24,8 @@
 require 'slop'
 
 opts = Slop.parse(ARGV, strict: true, help: true) do |o|
-  o.integer '--width', default: 12
-  o.integer '--height', default: 8
+  o.integer '--width', default: 9
+  o.integer '--height', default: 5
   o.string '--xlabel', default: 'log_{10}(M)'
   o.string '--ylabel', default: 'log_{10}(V)'
   o.string '--xaxis', default: 'summary-files.csv'
@@ -56,7 +56,7 @@ puts "axis lines=middle, xlabel={$#{opts[:xlabel]}$}, ylabel={$#{opts[:ylabel]}$
 puts "xmin=#{points.map { |p| p[:x] }.min}, xmax=#{xmax},"
 puts "ymin=#{points.map { |p| p[:y] }.min}, ymax=#{ymax},"
 puts "extra tick style={major grid style=black},grid=major]"
-puts "\\addplot [mark=*, only marks] coordinates {"
+puts "\\addplot [mark=*, only marks, mark size=0.8pt] coordinates {"
 points.each do |p|
   puts "(#{p[:x]},#{p[:y]})"
 end

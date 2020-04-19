@@ -20,16 +20,12 @@
 % OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 % SOFTWARE.
 
-% \documentclass[a4paper,UKenglish,cleveref, autoref]{lipics-v2019}
-\documentclass[12pt]{article}
+\documentclass[sigconf]{acmart}
 \title{Source Code Volatility Metric}
 \author{Yegor Bugayenko}{}{}
-% \authorrunning{Yegor Bugayenko}
-% \ccsdesc[100]{Software and its engineering~Object oriented languages}
-% \keywords{Object-Oriented Programming, Immutability, NCSS}
+\ccsdesc[100]{Software and its engineering~Metrics}
+\keywords{Metrics, Software Size, Software Maintainability}
 \usepackage[utf8]{inputenc}
-\usepackage[numbers]{natbib}
-\bibliographystyle{plainnat}
 \usepackage{textcomp}
 \usepackage[inline]{enumitem}
 \usepackage{amsmath}
@@ -48,16 +44,17 @@
   {\medskip}
 \input{total}
 \begin{document}
-\raggedbottom
-\maketitle
-
 \begin{abstract}
 A new metric was introduced to calculate the distance
 between actively modified files in a source code repository
 and the files, which are rarely modified and may be considered
 as ``dead'' or ``abandoned.'' It was empirically demonstrated that larger repositories
 have larger values of the introduced metric.
+The metric may be used for earlier detection of code maintenance anomalies
+and helping software developers make the decision of splitting the repository
+into smaller oners in order to prevent maintainability issues.
 \end{abstract}
+\maketitle
 
 \section{Introduction}
 
@@ -91,16 +88,42 @@ proven to be the most reliable predictors of bugs in
 contemporary software engineering research,'' the introduced volatility
 metric may be used to spot maintainability issues.
 
+The paper is organized as follows.
+Section~\ref{sec:background} defines various terms used in the paper.
+Section~\ref{sec:related} covers related work in the areas of code change metrics
+and empirical analysis of source code repository size.
+Section~\ref{sec:method} covers the source code volatility metric.
+Section~\ref{sec:results} covers our empirical case study of \thetotalrepos{} Java source code repositories.
+Section~\ref{sec:discussion} covers limitations of both the metric and the study.
+Finally, we summarize our study in Section~\ref{sec:conclusion}.
+
+\section{Background}
+\label{sec:background}
+
+In this paper, we use several terms regarding version control systems and
+software metrics. The type of metric we are proposing belongs to the family
+of source code change metrics, which analyze the history
+of changes in a source code repository~\citep{fentonsoftware,choudhary2018}.
+A \emph{change} in a version control system, such as Git, is an individual
+modification to the source code file made by a software developer locally
+on his/her machine and then \emph{committed} to the repository.
+
+Each version control system, including Git, provides an instrument for
+retrieving the entire history of changes from a repository. We use
+\texttt{git log} for Git.
+
 \section{Related Work}
+\label{sec:related}
 
 The metric introduced in this research belongs to the family of
-``code change metrics,'' which analyze the history of changes in a repository~\citep{fentonsoftware,choudhary2018}.
-Code churn is one of the simplest metric, which counts
+``code change metrics,''
+Code churn is one of the simplest metric in the family, which counts
 all lines being modified (added, edited, and deleted) during
 the entire lifetime of a project~\citep{munson1998}. It was demonstrated
 by~\citet{shin2010} how code churn, together with complexity and other
 developer activity metrics, is related to software vulnerabilities.
-The number of changes being made to a particular file, class, method
+Yet another simple metrict from the family is
+the number of changes being made to a particular file, class, method
 or line of code is yet another simple metric, used for example by~\citet{demeyer2000}
 in order to analyze the effect of refactorings.
 
@@ -161,6 +184,7 @@ the volatility the more cohesive is the repository and the smaller
 the amount of the dead code inside it.
 
 \section{Empirical Results}
+\label{sec:results}
 
 A list of Java repositories were retrieved from GitHub via their
 public API. The first \thetotalrepos{} repositories were taken, which satisfied
@@ -208,6 +232,7 @@ of the volatility metric.
 \end{figure}
 
 \section{Discussion}
+\label{sec:discussion}
 
 It was demonstrated that the size of the source code is an important
 factor negatively affecting maintainability and other quality characteristicts.
@@ -218,15 +243,17 @@ of a software because ``it is fairly intuitive that the total size of a system s
 feature heavily in any measure of maintainability.''
 
 \section{Conclusion}
+\label{sec:conclusion}
 
 A new source code volatility metric was introduced and applied
 to \thetotalrepos{} open source Java repositories from GitHub. It was
 empirically demonstrated that larger repositories have higher values
 of the volatility metric.
 
-The source code of Ruby and Python scripts used to do the research
-is available in GitHub repository \texttt{yegor256/volatility-vs-size}.
+% The source code of Ruby and Python scripts used to do the research
+% is available in GitHub repository \texttt{yegor256/volatility-vs-size}.
 
+\bibliographystyle{ACM-Reference-Format}
 \bibliography{main}
 
 \end{document}
