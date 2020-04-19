@@ -90,7 +90,7 @@ In order to demonstrate how the metric works we applied it to
 \thetotalrepos{} public Java repositories from GitHub and analyzed
 its impact on a two other characteristics of each repository:
 the number of files in a repository and the size of it in bytes.
-Larger repositories shown larger values of the volatility.
+Larger repositories shown larger values of the metric.
 
 The paper is organized as follows.
 Section~\ref{sec:background} defines various terms used in the paper.
@@ -106,9 +106,9 @@ Finally, we summarize our study in Section~\ref{sec:conclusion}.
 
 In this paper, we use several terms regarding version control systems and
 software metrics. The type of metric we are proposing belongs to the family
-of source code change metrics, which analyze the history
+of \emph{source code change metrics}, which analyze the history
 of changes in a source code repository~\citep{fentonsoftware,choudhary2018}.
-A \emph{change} in a version control system, such as Git, is an individual
+A \emph{change} in a version control system, such as Git, is an atomic
 modification to the source code file made by a software developer locally
 on his/her machine and then \emph{committed} to the repository.
 
@@ -132,7 +132,10 @@ Code churn is one of the simplest metric in the family, which counts
 all lines being modified (added, edited, and deleted) during
 the entire lifetime of a project~\citep{munson1998}. It was demonstrated
 by~\citet{shin2010} how code churn, together with complexity and other
-developer activity metrics, is related to software vulnerabilities.
+developer activity metrics, is related to software vulnerabilities. There
+are modifications of code churn, for example taking into accout socio-technical
+aspect of the metric, as suggested by~\citet{meneely2012}.
+
 Yet another simple metrict from the family is
 the number of changes being made to a particular file, class, method
 or line of code is yet another simple metric, used for example by~\citet{demeyer2000}
@@ -154,7 +157,8 @@ and introduced a new one to measure, by looking at Git/GitHub project
 commit history, how ``close'' developers stay to each other and form
 pairs.
 
-To our knowledge, the metric introduced in this research has never been
+To our knowledge, the metrics introduced in this research, in order
+to detect anomalies in source code repository maintenance, has never been
 suggested.
 
 \section{Metric}
