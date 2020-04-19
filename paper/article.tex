@@ -23,8 +23,17 @@
 \documentclass[sigconf]{acmart}
 \title{Source Code Volatility Metric}
 \author{Yegor Bugayenko}{}{}
+\email{yegor.bugayenko@huawei.com}
+\affiliation{%
+  \institution{Huawei Technologies Co., Ltd.}
+  \city{Moscow, Russia}
+}
 \ccsdesc[100]{Software and its engineering~Metrics}
 \keywords{Metrics, Software Size, Software Maintainability}
+\setcopyright{acmcopyright}
+\copyrightyear{2020}
+\acmYear{2020}
+
 \usepackage[utf8]{inputenc}
 \usepackage{textcomp}
 \usepackage[inline]{enumitem}
@@ -52,7 +61,7 @@ as ``dead'' or ``abandoned.'' It was empirically demonstrated that larger reposi
 have larger values of the introduced metric.
 The metric may be used for earlier detection of code maintenance anomalies
 and helping software developers make the decision of splitting the repository
-into smaller oners in order to prevent maintainability issues.
+into smaller ones in order to prevent maintainability issues.
 \end{abstract}
 \maketitle
 
@@ -111,6 +120,11 @@ on his/her machine and then \emph{committed} to the repository.
 Each version control system, including Git, provides an instrument for
 retrieving the entire history of changes from a repository. We use
 \texttt{git log} for Git.
+
+GitHub\texttrademark{} (currently owned by Microsoft\texttrademark{}) is
+one of the largest platforms for \emph{open source} projects.
+GitHub provides free access to all public Git repositories, which makes it possible
+to analyze Git histories.
 
 \section{Related Work}
 \label{sec:related}
