@@ -67,35 +67,30 @@ into smaller ones in order to prevent maintainability issues.
 
 \section{Introduction}
 
-Most software development projects keep their source code in Git~\citet{loeliger2012},
+Most software development projects keep their source code in Git~\citep{loeliger2012},
 which is the de-facto standard in the industry at the moment, or similar
 version control systems. Every system, including open
 source products like Git, Subversion, and Mercurial, and commerical tools
 like Borland StarTeam\texttrademark{} or IBM ClearCase\texttrademark{}
 have the same feature: keeping track of the changes
-made to the source code files, known as ``logs.''
+made to the source code files, also known as ``logs.''
 
 Git logs provide information about every single change made by every software
 developer during the entire course of the project. Using this information
 it's possible to measure which files are being modified frequently. On the
 other hand, it's also possible to spot files that are rarely modified and may
-be considered as ``dead'' or ``abandoned'' code, which is a threat
+be considered as ``dead'' or ``abandoned'' code, which may be considered as a threat
 to the maintainability of the entire project.
 
-It is possible to introduce a metric to measure the relationship
+We introduce a metric to measure the relationship
 between the amount of actively modified files and files which stay
 in the repository for a long time without modifications.
-In Section~\ref{sec:method} such a metric is introduced.
 
 In order to demonstrate how the metric works we applied it to
 \thetotalrepos{} public Java repositories from GitHub and analyzed
-its impact on a few other simple metrics, including the number
-of files in a repository, the number of directories, and the amount
-of bytes. Since, according to~\citet{muthukumaran2015},
-``code change metrics mined from source control repositories have
-proven to be the most reliable predictors of bugs in
-contemporary software engineering research,'' the introduced volatility
-metric may be used to spot maintainability issues.
+its impact on a two other characteristics of each repository:
+the number of files in a repository and the size of it in bytes.
+Larger repositories shown larger values of the volatility.
 
 The paper is organized as follows.
 Section~\ref{sec:background} defines various terms used in the paper.
@@ -129,8 +124,10 @@ to analyze Git histories.
 \section{Related Work}
 \label{sec:related}
 
-The metric introduced in this research belongs to the family of
-``code change metrics,''
+``Code change metrics mined from source control repositories have
+proven to be the most reliable predictors of bugs in
+contemporary software engineering research,'' says \citet{muthukumaran2015}.
+
 Code churn is one of the simplest metric in the family, which counts
 all lines being modified (added, edited, and deleted) during
 the entire lifetime of a project~\citep{munson1998}. It was demonstrated
@@ -160,7 +157,7 @@ pairs.
 To our knowledge, the metric introduced in this research has never been
 suggested.
 
-\section{Method}
+\section{Metric}
 \label{sec:method}
 
 First, by looking at the Git history,
@@ -173,7 +170,8 @@ T = [t_1, t_2, \dots, t_N]
 \end{eqnarray}
 
 Then, the entire interval between $\check{T}$ (the maximum value)
-and $\hat{T}$ (the minimum value) is divided to $Z$ equivalent groups:
+and $\hat{T}$ (the minimum value) is divided to $Z$ (the input parameter of the method)
+equivalent groups:
 
 \begin{align}
 \delta &= ( \check{T} - \hat{T} ) / Z \\
