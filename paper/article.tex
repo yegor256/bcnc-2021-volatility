@@ -136,9 +136,9 @@ developer activity metrics, is related to software vulnerabilities. There
 are modifications of code churn, for example taking into accout socio-technical
 aspect of the metric, as suggested by~\citet{meneely2012}.
 
-Yet another simple metrict from the family is
+Yet another simple metric from the family is
 the number of changes being made to a particular file, class, method
-or line of code is yet another simple metric, used for example by~\citet{demeyer2000}
+or line of code, which is used for example by~\citet{demeyer2000}
 in order to analyze the effect of refactorings.
 
 \citet{moser2008} made a comparative analysis of 17 change metrics to understand
@@ -157,7 +157,7 @@ and introduced a new one to measure, by looking at Git/GitHub project
 commit history, how ``close'' developers stay to each other and form
 pairs.
 
-To our knowledge, the metrics introduced in this research, in order
+To our knowledge, the metrics introduced in this research in order
 to detect anomalies in source code repository maintenance, has never been
 suggested.
 
@@ -257,6 +257,21 @@ in the repository, the number of lines per file, the number of methods in a clas
 and so on) as a primary contributor to an aggregate maintainability index
 of a software because ``it is fairly intuitive that the total size of a system should
 feature heavily in any measure of maintainability.''
+
+It would be beneficial in future researches to analyze the relationship between
+volatility and other parameters of source code repositories,
+such as
+the programming language being used,
+the popularity in GitHub (the number of stars and forks),
+the total number of lines of code,
+the average number of lines of code per file,
+the number of Git commit authors,
+the total age of the repository,
+the number of issues and pull requests in GitHub,
+and many others.
+Would be interesting to empiricially demonstrate which of these parameters
+(or combinations of them)
+impact the behavior of volatility and in which direction.
 
 \section{Conclusion}
 \label{sec:conclusion}
