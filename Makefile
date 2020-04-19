@@ -49,8 +49,9 @@ clone:
 
 uncalc:
 	find metrics -name 'scv.m' -exec rm \{} \;
+	find metrics -name 'scv*.m' -exec rm \{} \;
 
-metrics=files bytes dirs scv
+metrics=files bytes scv32 scv64 scv128
 
 calc:
 	for f in $$(find clones/ -type directory -depth 2); do \
@@ -60,38 +61,38 @@ calc:
 		if [ ! -e "$${p}" ]; then \
 			find "clones/$${f}" -type file -not -path '.git/*' | wc -l > "$${p}"; \
 		fi; \
-		p="metrics/$${f}/dirs.m"; \
-		if [ ! -e "$${p}" ]; then \
-			find "clones/$${f}" -type directory -not -path '.git/*' | wc -l > "$${p}"; \
-		fi; \
 		p="metrics/$${f}/bytes.m"; \
 		if [ ! -e "$${p}" ]; then \
 			du -s -b "clones/$${f}" | awk '{ print $$1 }' > "$${p}"; \
 		fi; \
-		p="metrics/$${f}/scv.m"; \
-		if [ ! -e "$${p}" ]; then \
-			/code/volatility/bin/volatility --home="clones/$${f}" > "$${p}"; \
-		fi; \
+		for z in 32 64 128; do \
+			p="metrics/$${f}/scv$${z}.m"; \
+			if [ ! -e "$${p}" ]; then \
+				/code/volatility/bin/volatility --sectors=$${z} --home="clones/$${f}" > "$${p}"; \
+			fi; \
+		done; \
 	done
 
 summary:
 	for i in ${metrics}; do \
-		rm -rf "summary-$${i}.csv"; \
-		touch "summary-$${i}.csv"; \
+		s="summary-$${i}.csv"; \
+		rm -rf $${s}; \
+		touch $${s}; \
 		for f in $$(find metrics -name $${i}.m); do \
-			cat "$${f}" >> summary-$$i.csv; \
+			cat "$${f}" >> $${s}; \
 		done; \
-		echo "$$(wc -l < summary-$${i}.csv) repos measured $${i}"; \
+		echo "$$(wc -l < $${s}) repos measured $${i}, summary in $${s}"; \
 	done
 
-draw: summary-files.csv summary-bytes.csv summary-dirs.csv
-	ruby draw.rb --xaxis=summary-files.csv '--xlabel=log_{10}(M_1)' > paper/files.tex
-	ruby draw.rb --xaxis=summary-bytes.csv '--xlabel=log_{10}(M_2)' > paper/bytes.tex
-	ruby draw.rb --xaxis=summary-dirs.csv '--xlabel=log_{10}(M_3)' > paper/dirs.tex
+draw: summary-files.csv summary-bytes.csv
+	for z in 32 64 128; do \
+		ruby draw.rb --yaxis=summary-scv$${z}.csv --xaxis=summary-files.csv '--xlabel=log_{10}(M_1)' > paper/files-$${z}.tex; \
+		ruby draw.rb --yaxis=summary-scv$${z}.csv --xaxis=summary-bytes.csv '--xlabel=log_{10}(M_2)' > paper/bytes-$${z}.tex; \
+	done
 
-metrics: summary-files.csv
+metrics:
 	rm -f paper/total.tex
 	echo "\\\def\\\thetotalrepos{$$(find metrics -name 'files.m' | wc -l)}" > paper/total.tex
 
-article: paper/files.tex paper/bytes.tex paper/total.tex
+article: paper/article.tex paper/files-64.tex paper/bytes-64.tex paper/total.tex
 	cd paper; rm -f article.pdf; latexmk -pdf article

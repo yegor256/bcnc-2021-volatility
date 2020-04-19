@@ -57,7 +57,7 @@
 A new metric was introduced to calculate the distance
 between actively modified files in a source code repository
 and the files, which are rarely modified and may be considered
-as ``dead'' or ``abandoned.'' It was empirically demonstrated that larger repositories
+abandoned or even dead. It was empirically demonstrated that larger repositories
 have larger values of the introduced metric.
 The metric may be used for earlier detection of code maintenance anomalies
 and helping software developers make the decision of splitting the repository
@@ -79,7 +79,7 @@ Git logs provide information about every single change made by every software
 developer during the entire course of the project. Using this information
 it's possible to measure which files are being modified frequently. On the
 other hand, it's also possible to spot files that are rarely modified and may
-be considered as ``dead'' or ``abandoned'' code, which may be considered as a threat
+be considered as abandoned code, which may be considered as a threat
 to the maintainability of the entire project.
 
 We introduce a metric to measure the relationship
@@ -197,7 +197,7 @@ Finally, the variance is calculated as:
 
 The variance $\text{Var}(g)$ is the volatility of the source code. The smaller
 the volatility the more cohesive is the repository and the smaller
-the amount of the dead code inside it.
+the amount of the abandonded code inside it.
 
 \section{Empirical Results}
 \label{sec:results}
@@ -223,14 +223,14 @@ for each repository and their values were compared with the volatility.
 The Figure~\ref{fig:1} demonstrates the relationship between
 the number of files in the repository~($M_1$) and its volatility~($V$). Both
 axixes of the graph have logarithmic scales, for the sake of visual
-understandability: the difference between minimum and maximum values
-of volatility is logarithmically large. It is visually obvious that
+understandability: the difference between the minimum and the maximum values
+of the volatility is logarithmically large. It is visually obvious that
 repositories with larger number of files tend to have higher values
 of the volatility metric.
 
 \begin{figure}[h]
-  \input{files.tex}
-  \caption{The relationship between the number of files in the repository and its volatility}
+  \input{files-64.tex}
+  \caption{The relationship between the number of files in the repository and its volatility ($Z$ is set to 64)}
   \label{fig:1}
 \end{figure}
 
@@ -242,9 +242,29 @@ binary-size larger repositories tend to have higher values
 of the volatility metric.
 
 \begin{figure}[h]
-  \input{bytes.tex}
-  \caption{The relationship between the size of the Git repository in bytes and its volatility}
+  \input{bytes-64.tex}
+  \caption{The relationship between the size of the Git repository in bytes and its volatility ($Z$ is set to 64)}
   \label{fig:2}
+\end{figure}
+
+The Figure~\ref{fig:1} demonstrates the same relationship as the Figure~\ref{fig:1},
+but the parameter of the volatility formula is set to 32 instead of 64. The
+trend of the graph didn't change much.
+
+\begin{figure}[h]
+  \input{files-32.tex}
+  \caption{The relationship between the number of files in the repository and its volatility ($Z$ is set to 32)}
+  \label{fig:3}
+\end{figure}
+
+The Figure~\ref{fig:1} demonstrates the same relationship as the Figure~\ref{fig:1},
+but this time the parameter of the volatility formula is increased to 128
+instead of the original value of 64. The trend of the graph didn't change much.
+
+\begin{figure}[h]
+  \input{files-128.tex}
+  \caption{The relationship between the number of files in the repository and its volatility ($Z$ is set to 128)}
+  \label{fig:4}
 \end{figure}
 
 \section{Discussion}
@@ -252,11 +272,37 @@ of the volatility metric.
 
 It was demonstrated that the size of the source code is an important
 factor negatively affecting maintainability and other quality characteristicts.
-For example, \citet{heitlager2007} suggested to consider ``volume'' (the amount of code
-in the repository, the number of lines per file, the number of methods in a class,
+For example, \citet{heitlager2007} suggested to consider ``volume''
+(the number of lines per file, the number of methods in a class,
 and so on) as a primary contributor to an aggregate maintainability index
 of a software because ``it is fairly intuitive that the total size of a system should
 feature heavily in any measure of maintainability.''
+
+However, the discussion of whether larger repositories are a better
+practice than smaller ones is still open. Google, for example, advocates
+for larger ones, known as ``monolithic,'' which tend to keep many modules
+and components in one Git space, simplifying dependencies management~\citep{jaspan2018}.
+As was demonstrated in our research, larger repositories will tend to
+have maintenance anomalies: some parts of source code will be changed much
+less frequently than other parts. Moreover, the distance between ``popular''
+parts and ``abandoned'' ones will grow when the size of the repository grows.
+
+These maintenance anomalies will lead to maintability and quality problems
+mostly because it will be difficult for programmers to quickly switch between
+different contexts inside one repository: one set of files is being modified
+every day, while another one stays untouched for months. A programmer will
+try to avoid making changes to the part that is abandonded because it won't
+look like code that is expecting changes.
+
+Also, maintenance anomalies is a sign of differences in customer demand
+for the source code components. The module with smaller frequency of changes
+must be released less frequently than the module that is being edited every day.
+Not paying attention to the growing volatility of the repository means
+ignoring anomalies and, because of that, redundant releasing of the code
+that doesn't require new releases. Moreover, releasing larger software modules
+usually means longer build cycles, which are the key failure factor of
+continuous delivery, as explained by~\cite{humble2010}. Getting rid of
+maintenance anomalies may help reduce build cycles.
 
 It would be beneficial in future researches to analyze the relationship between
 volatility and other parameters of source code repositories,
