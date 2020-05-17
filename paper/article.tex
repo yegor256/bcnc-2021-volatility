@@ -20,7 +20,7 @@
 % OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 % SOFTWARE.
 
-\documentclass[sigconf]{acmart}
+\documentclass[anonymous,sigconf,10pt,nonacm=true]{acmart}
 \title{Volatility Metric to Detect Anomalies in Source Code Repositories}
 \author{Yegor Bugayenko}{}{}
 \email{yegor.bugayenko@huawei.com}
@@ -30,9 +30,9 @@
 }
 \ccsdesc[100]{Software and its engineering~Metrics}
 \keywords{Metrics, Software Size, Software Maintainability}
-\setcopyright{acmcopyright}
-\copyrightyear{2020}
-\acmYear{2020}
+% \setcopyright{acmcopyright}
+% \copyrightyear{2020}
+% \acmYear{2020}
 
 \usepackage[utf8]{inputenc}
 \usepackage{textcomp}
@@ -77,19 +77,34 @@ made to the source code files, also known as ``logs.''
 
 Git logs provide information about every single change made by every software
 developer during the entire course of the project. Using this information
-it's possible to measure which files are being modified frequently. On the
-other hand, it's also possible to spot files that are rarely modified and may
-be considered as abandoned code, which may be considered as a threat
-to the maintainability of the entire project.
+it's possible to measure which files are being modified more frequently than others.
+On the other hand, it's also possible to spot files that are rarely modified and may
+be considered either as \emph{abandoned} or \emph{stable} code.
+\citet{fontana2014} claims that the gap between actively modified code
+and the code that is stable should be as narrow as possible in a properly
+maintained repository.
 
-We introduce a metric to measure the relationship
+Indeed, abandoned code may be considered as a threat
+to the maintainability of the entire project, because its lifecycle
+is not aligned with the lifecycle of active code, which is modified more intensively.
+Later, when a modification is required to the abandonded code, a programmer
+may have difficulties finding out the principles of design of the code and
+making sure new modifications don't break it.
+
+We introduce a Volatility metric to measure the relationship
 between the amount of actively modified files and files which stay
 in the repository for a long time without modifications.
+The hipothesis is that the Volatility is related to the size of the
+repository: the larger the repository the higher the volatility. Larger
+repositories are an obvious threat to code maintainability. Thus, if
+the relationship between size and Volatility exists, the new metric
+can be used to identify code anomalies and detect badly maintained repositories.
 
-In order to demonstrate how the metric works we applied it to
+In order to validate the hipothesis and demonstrate how the metric works we applied it to
 \thetotalrepos{} public Java repositories from GitHub and analyzed
-its impact on a two other characteristics of each repository:
+its impact on two other characteristics of each repository:
 the number of files in a repository and the size of it in bytes.
+
 Larger repositories shown larger values of the metric.
 
 The paper is organized as follows.
@@ -157,7 +172,15 @@ and introduced a new one to measure, by looking at Git/GitHub project
 commit history, how ``close'' developers stay to each other and form
 pairs.
 
-To our knowledge, the metrics introduced in this research in order
+\citet{fontana2014} suggested to measure ``File Volatility'' as the ratio
+between the maximum number of changes happened to a file line and the number
+of all changes to the file since its creation. Going further, they also suggested to
+calculate ``Repository Stability'' metric as a relationship between
+active files (with high File Volatility) and closed files.
+The also concluded that repositories where most files change
+over time can suffer from organizational or design issues.
+
+To our knowledge, the metric introduced in this research, in order
 to detect anomalies in source code repository maintenance, has never been
 suggested.
 
@@ -173,15 +196,21 @@ in the repository anymore):
 T = [t_1, t_2, \dots, t_N]
 \end{eqnarray}
 
-Then, the entire interval between $\check{T}$ (the maximum value)
+Here, $t_i$ is the number of commits found in the repository, which
+modified the $i$-th file. Then, the entire interval between $\check{T}$ (the maximum value)
 and $\hat{T}$ (the minimum value) is divided to $Z$ (the input parameter of the method)
 equivalent groups:
 
 \begin{align}
 \delta &= ( \check{T} - \hat{T} ) / Z \\
 G &= [g_1, g_2, \dots, g_{Z}] \\
-g_j &= \sum_{i=1}^N [ j(\delta-1) < t_i < j\delta ]
+g_j &= \sum_{i=1}^N [ j \times (\delta-1) < t_i < j \times \delta ]
 \end{align}
+
+Here, $g_j$ is the total number of $t_i$, which are larger than
+$j \times (\delta-1)$ and smaller than $j \times \delta$. In other words,
+$T$, the entire set of measurements, is sorted and then split into $Z$ sectors,
+where $g_j$ is the counter of measurements that belong to the sector $j$.
 
 Then, the mean $\mu$ is calculated as:
 
@@ -195,9 +224,15 @@ Finally, the variance is calculated as:
 \text{Var}(g) = \frac{1}{Z}\sum_{j=1}^{Z}{|g_j - \mu|^2}
 \end{eqnarray}
 
-The variance $\text{Var}(g)$ is the volatility of the source code. The smaller
-the volatility the more cohesive is the repository and the smaller
-the amount of the abandonded code inside it.
+The variance $\text{Var}(g)$ is the Volatility of the source code. The smaller
+the Volatility the more cohesive is the repository and the smaller
+the amount of the abandonded code inside it. The metric demonstrates how
+large is the gap between intensively modified files and the abandoned ones:
+the larger the variance, the wider the graph, and the larger the gap.
+A repository with a thousand files all being modified at the same pace would
+have a Volatility of zero. On the other hand, a repository with just a few
+files, where one of them is modified a thousand times, while others are modified
+just once, will have the Volatility of a miillion.
 
 \section{Empirical Results}
 \label{sec:results}
@@ -215,55 +250,55 @@ The list included popular Java open source products, such as
 Spring, RxJava, Guava, MyBatis, Clojure, JUnit, Lombok,
 Graal, Selenium, Spark, Mockito, Neo4j, Jenkins, Netty, and others.
 
-The volatility metric was calculated for each repository, using the
+The Volatility metric was calculated for each repository, using the
 formula explained above (the value of $Z$ was set to 64).
 Then, a few other metrics were collected
-for each repository and their values were compared with the volatility.
+for each repository and their values were compared with the Volatility.
 
 The Figure~\ref{fig:1} demonstrates the relationship between
-the number of files in the repository~($M_1$) and its volatility~($V$). Both
-axixes of the graph have logarithmic scales, for the sake of visual
+the number of files in the repository~($M_1$) and its Volatility~($V$).
+Both axixes of the graph have logarithmic scales, for the sake of visual
 understandability: the difference between the minimum and the maximum values
-of the volatility is logarithmically large. It is visually obvious that
+of the Volatility is logarithmically large. It is visually obvious that
 repositories with larger number of files tend to have higher values
-of the volatility metric.
+of the Volatility metric.
 
 \begin{figure}[h]
   \input{files-64.tex}
-  \caption{The relationship between the number of files in the repository and its volatility ($Z$ is set to 64)}
+  \caption{The relationship between the number of files in the repository and its Volatility ($Z$ is set to 64)}
   \label{fig:1}
 \end{figure}
 
 The Figure~\ref{fig:2} demonstrates the relationship between
 the logarithm of the size of the Git repository in bytes~($M_2$) and
-the logarithm of its volatility~($V$).
+the logarithm of its Volatility~($V$).
 It is visually obvious that
 binary-size larger repositories tend to have higher values
-of the volatility metric.
+of the Volatility metric.
 
 \begin{figure}[h]
   \input{bytes-64.tex}
-  \caption{The relationship between the size of the Git repository in bytes and its volatility ($Z$ is set to 64)}
+  \caption{The relationship between the size of the Git repository in bytes and its Volatility ($Z$ is set to 64)}
   \label{fig:2}
 \end{figure}
 
 The Figure~\ref{fig:1} demonstrates the same relationship as the Figure~\ref{fig:1},
-but the parameter of the volatility formula is set to 32 instead of 64. The
+but the parameter of the Volatility formula is set to 32 instead of 64. The
 trend of the graph didn't change much.
 
 \begin{figure}[h]
   \input{files-32.tex}
-  \caption{The relationship between the number of files in the repository and its volatility ($Z$ is set to 32)}
+  \caption{The relationship between the number of files in the repository and its Volatility ($Z$ is set to 32)}
   \label{fig:3}
 \end{figure}
 
 The Figure~\ref{fig:1} demonstrates the same relationship as the Figure~\ref{fig:1},
-but this time the parameter of the volatility formula is increased to 128
+but this time the parameter of the Volatility formula is increased to 128
 instead of the original value of 64. The trend of the graph didn't change much.
 
 \begin{figure}[h]
   \input{files-128.tex}
-  \caption{The relationship between the number of files in the repository and its volatility ($Z$ is set to 128)}
+  \caption{The relationship between the number of files in the repository and its Volatility ($Z$ is set to 128)}
   \label{fig:4}
 \end{figure}
 
@@ -297,7 +332,7 @@ look like code that is expecting changes.
 Also, maintenance anomalies is a sign of differences in customer demand
 for the source code components. The module with smaller frequency of changes
 must be released less frequently than the module that is being edited every day.
-Not paying attention to the growing volatility of the repository means
+Not paying attention to the growing Volatility of the repository means
 ignoring anomalies and, because of that, redundant releasing of the code
 that doesn't require new releases. Moreover, releasing larger software modules
 usually means longer build cycles, which are the key failure factor of
@@ -305,7 +340,7 @@ continuous delivery, as explained by~\cite{humble2010}. Getting rid of
 maintenance anomalies may help reduce build cycles.
 
 It would be beneficial in future researches to analyze the relationship between
-volatility and other parameters of source code repositories,
+Volatility and other parameters of source code repositories,
 such as
 the programming language being used,
 the popularity in GitHub (the number of stars and forks),
@@ -317,15 +352,15 @@ the number of issues and pull requests in GitHub,
 and many others.
 Would be interesting to empiricially demonstrate which of these parameters
 (or combinations of them)
-impact the behavior of volatility and in which direction.
+impact the behavior of Volatility and in which direction.
 
 \section{Conclusion}
 \label{sec:conclusion}
 
-A new source code volatility metric was introduced and applied
+A new source code Volatility metric was introduced and applied
 to \thetotalrepos{} open source Java repositories from GitHub. It was
 empirically demonstrated that larger repositories have higher values
-of the volatility metric.
+of the Volatility metric.
 
 % The source code of Ruby and Python scripts used to do the research
 % is available in GitHub repository \texttt{yegor256/volatility-vs-size}.
