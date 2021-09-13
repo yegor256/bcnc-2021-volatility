@@ -20,14 +20,13 @@
 % OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 % SOFTWARE.
 
-\documentclass[anonymous,sigconf,10pt,nonacm=true]{acmart}
+\documentclass[sigplan,10pt,nonacm=true]{acmart}
+\settopmatter{printfolios=false,printccs=false,printacmref=false}
+
 \title{Volatility Metric to Detect Anomalies in Source Code Repositories}
 \author{Yegor Bugayenko}{}{}
-\email{yegor.bugayenko@huawei.com}
-\affiliation{%
-  \institution{Huawei Technologies Co., Ltd.}
-  \city{Moscow, Russia}
-}
+\email{yegor256@gmail.com}
+\affiliation{\institution{}\city{Moscow}\country{Russia}}
 \ccsdesc[100]{Software and its engineering~Metrics}
 \keywords{Metrics, Software Size, Software Maintainability}
 % \setcopyright{acmcopyright}
@@ -51,7 +50,7 @@
 \newenvironment{nicetable}
   {\setlength{\parindent}{0em}\medskip\small}
   {\medskip}
-\input{total}
+\input{tex/total}
 \begin{document}
 \begin{abstract}
 A new metric was introduced to calculate the distance
@@ -70,8 +69,8 @@ into smaller ones in order to prevent maintainability issues.
 Most software development projects keep their source code in Git~\citep{loeliger2012},
 which is the de-facto standard in the industry at the moment, or similar
 version control systems. Every system, including open
-source products like Git, Subversion, and Mercurial, and commerical tools
-like Borland StarTeam\texttrademark{} or IBM ClearCase\texttrademark{}
+source products like Git, Subversion, and Mercurial, and commercical tools
+like StarTeam\texttrademark{} or ClearCase\texttrademark{}
 have the same feature: keeping track of the changes
 made to the source code files, also known as ``logs.''
 
@@ -264,7 +263,7 @@ repositories with larger number of files tend to have higher values
 of the Volatility metric.
 
 \begin{figure}[h]
-  \input{files-64.tex}
+  \input{tex/files-64.tex}
   \caption{The relationship between the number of files in the repository and its Volatility ($Z$ is set to 64)}
   \label{fig:1}
 \end{figure}
@@ -277,7 +276,7 @@ binary-size larger repositories tend to have higher values
 of the Volatility metric.
 
 \begin{figure}[h]
-  \input{bytes-64.tex}
+  \input{tex/bytes-64.tex}
   \caption{The relationship between the size of the Git repository in bytes and its Volatility ($Z$ is set to 64)}
   \label{fig:2}
 \end{figure}
@@ -287,7 +286,7 @@ but the parameter of the Volatility formula is set to 32 instead of 64. The
 trend of the graph didn't change much.
 
 \begin{figure}[h]
-  \input{files-32.tex}
+  \input{tex/files-32.tex}
   \caption{The relationship between the number of files in the repository and its Volatility ($Z$ is set to 32)}
   \label{fig:3}
 \end{figure}
@@ -297,7 +296,7 @@ but this time the parameter of the Volatility formula is increased to 128
 instead of the original value of 64. The trend of the graph didn't change much.
 
 \begin{figure}[h]
-  \input{files-128.tex}
+  \input{tex/files-128.tex}
   \caption{The relationship between the number of files in the repository and its Volatility ($Z$ is set to 128)}
   \label{fig:4}
 \end{figure}
