@@ -20,18 +20,36 @@
 % OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 % SOFTWARE.
 
-\documentclass[sigplan,10pt,nonacm=true]{acmart}
-\settopmatter{printfolios=false,printccs=false,printacmref=false}
+\documentclass[sigplan,10pt,screen]{acmart}
+% \settopmatter{printfolios=false,printccs=false,printacmref=false}
 
 \title{Volatility Metric to Detect Anomalies in Source Code Repositories}
-\author{Yegor Bugayenko}{}{}
+\author{Yegor Bugayenko}
+\orcid{0000-0001-6370-0678}
 \email{yegor256@gmail.com}
 \affiliation{\institution{}\city{Moscow}\country{Russia}}
-\ccsdesc[100]{Software and its engineering~Metrics}
+
+\setcopyright{acmcopyright}
+\acmPrice{15.00}
+\acmDOI{10.1145/3486949.3486961}
+\acmYear{2021}
+\copyrightyear{2021}
+\acmSubmissionID{splashws21bcncmain-p41-p}
+\acmISBN{978-1-4503-9125-2/21/10}
+\acmConference[BCNC '21]{Proceedings of the 1st ACM SIGPLAN International Workshop on Beyond Code: No Code}{October 17, 2021}{Chicago, IL, USA}
+\acmBooktitle{Proceedings of the 1st ACM SIGPLAN International Workshop on Beyond Code: No Code (BCNC '21), October 17, 2021, Chicago, IL, USA}
+
+\begin{CCSXML}
+<ccs2012>
+<concept>
+<concept_id>10011007.10011074.10011111.10011696</concept_id>
+<concept_desc>Software and its engineering~Maintaining software</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+</ccs2012>
+\end{CCSXML}
+\ccsdesc[500]{Software and its engineering~Maintaining software}
 \keywords{Metrics, Software Size, Software Maintainability}
-% \setcopyright{acmcopyright}
-% \copyrightyear{2020}
-% \acmYear{2020}
 
 \usepackage[utf8]{inputenc}
 \usepackage{textcomp}
@@ -361,10 +379,11 @@ to \thetotalrepos{} open source Java repositories from GitHub. It was
 empirically demonstrated that larger repositories have higher values
 of the Volatility metric.
 
-% The source code of Ruby and Python scripts used to do the research
-% is available in GitHub repository \texttt{yegor256/volatility-vs-size}.
+The source code of Ruby and Python scripts used to do the research
+is available in GitHub repository:\newline\texttt{yegor256/volatility-vs-size}.
 
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{main}
+\clearpage
 
 \end{document}
